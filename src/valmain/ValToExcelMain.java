@@ -12,20 +12,23 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 import valtoexcel.Constants;
 import valtoexcel.ExcelPoi;
 import valtoexcel.Val;
 
 public class ValToExcelMain {
 
-	public static void main(String[] args) throws IOException, SQLException {
+	public static void main(String[] args) throws IOException, SQLException, EncryptedDocumentException, InvalidFormatException {
 
 		//		connection 
 		String user ="NOVO";
 		String pass = "novo";
-		String url ="jdbc:oracle:thin:@//localhost:1521/xe";
+		String url = "jdbc:oracle:thin:@//localhost:1521/xe";
 			
-		Val val1 = new Val( "VAL1",5 , 5, 4, Constants.QUERY1);
+		Val val1 = new Val( "VAL1", 5 , 5, 4, Constants.QUERY1);
 		Val val2 = new Val( "VAL2", 5, 5, 11, Constants.QUERY2);
 
 		HashSet<Val> set = new HashSet<>();
@@ -44,9 +47,9 @@ public class ValToExcelMain {
 
 				try (
 						ResultSet result =  st.executeQuery(val.getQuery());
-
+					
 						){
-
+					System.out.println(val.getName() + " Query Executed");
 					int line = 0;
 					while (result.next()) {
 						line++;
@@ -60,7 +63,7 @@ public class ValToExcelMain {
 
 				}
 				val.setMap(map);
-				System.out.println(val.getName() + " " +val.getMap().values());
+				System.out.println(val.getName() + " ");// +val.getMap().values());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -70,7 +73,7 @@ public class ValToExcelMain {
 
 		ExcelPoi.whiteMapValExel(set);
 
-		//ExcelTutorial.whriteMapInExcel(map, "SQl");
+		
 
 	}
 
