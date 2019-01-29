@@ -67,7 +67,15 @@ public class Val {
 		this.maxCollumn = maxCollumn;
 		this.query = query;
 	}
-
+	public Val( String name, int line, int col ,  int maxCollumn) {
+		super();
+		//this.file = file;
+		this.name = name;
+		this.col= col;
+		this.setLine(line);
+		this.maxCollumn = maxCollumn;
+		
+	}
 	public int getLine() {
 		return line;
 	}
