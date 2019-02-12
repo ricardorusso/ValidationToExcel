@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 
 
 public  abstract class ExcelPoi {
@@ -43,16 +45,13 @@ public  abstract class ExcelPoi {
 	 */
 	public static void whiteMapValExel(Set<Val> set, File template) throws IOException, EncryptedDocumentException, InvalidFormatException {
 		Calendar c = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy k mm ", Locale.getDefault());
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd k mm ", Locale.getDefault());
 
 		String date =  format.format(c.getTime());
 		//String mes = formatMes.format(c.getTime());
 		//SimpleDateFormat formatMes = new SimpleDateFormat("MMMMM", Locale.getDefault());
 
 		System.out.println("Write to excel");
-
-
-
 
 		try(
 				FileInputStream fi = new FileInputStream(template);
@@ -66,10 +65,17 @@ public  abstract class ExcelPoi {
 		
 			for (Val val : set) {
 				Sheet sheet = work.getSheet(val.getName());
+				if(val.getName().equals("VAL2.1")) {
+					sheet = work.getSheet("VAL2");
+				}
 				if (sheet==null) {
 					sheet = work.createSheet(val.getName());
 				}
 				int line =val.getLine(); 
+				if(val.getMap()== null ) {
+					System.out.println("Erro "+val.getName() + " map null");
+					continue;
+				}
 				for (Entry<Integer, List<String>> entry : val.getMap().entrySet()) {
 
 					Row row = sheet.getRow(line);
@@ -82,15 +88,16 @@ public  abstract class ExcelPoi {
 
 						Cell cell = row.createCell(collumnCell);
 						
-						//System.out.println(row2);
-//						if( row2.matches("[0-9]")){
-//
-//							//cell.setCellType(cell.CELL_TYPE_NUMERIC);
-//							//System.out.println(row2+ " numeric");
-//							cell.setCellValue(Integer.parseInt(row2));
-//						}else {
-							cell.setCellValue(row2);
 						
+						if( row2!=null && row2.matches("^[0-9]*$") ){
+							cell.setCellValue(Integer.parseInt(row2));
+							
+						
+							//System.out.println(row2+ " numeric");
+							
+						}else {
+							cell.setCellValue(row2);
+						}
 						collumnCell++;
 					}
 					line++;
@@ -161,19 +168,24 @@ public  abstract class ExcelPoi {
 			String str = "";
 			StringBuilder strBu = new StringBuilder();
 			while (((str=br.readLine())!=null)) {
-				strBu.append(str);
+				strBu.append(str+" " );
 
 			}
 			for (Val val : set) {
-
 				int start =  strBu.indexOf(val.getName());
-
 				int end = strBu.indexOf(";", start);
 				String substring =  strBu.substring(start+val.getName().length(), end);
 
 				String cleanString = substring.replace('-', ' ').trim();
-				val.setQuery(cleanString);
-				System.out.println(val.getName() + " "+cleanString);
+				if (val.getQuery()==null ) {
+					val.setQuery(cleanString);
+					System.out.println(val.getName() + " "+cleanString+"\n");
+					
+
+				}else {
+					System.out.println(val.getName() + " Query already set "+ val.getQuery());
+				}
+				
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
