@@ -7,11 +7,15 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -46,11 +50,9 @@ public  abstract class ExcelPoi {
 	public static void whiteMapValExel(Set<Val> set, File template) throws IOException, EncryptedDocumentException, InvalidFormatException {
 		Calendar c = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd k mm ", Locale.getDefault());
-
+		SimpleDateFormat formatLastMonit = new SimpleDateFormat("dd/MM");
 		String date =  format.format(c.getTime());
-		//String mes = formatMes.format(c.getTime());
-		//SimpleDateFormat formatMes = new SimpleDateFormat("MMMMM", Locale.getDefault());
-
+		
 		System.out.println("Write to excel");
 
 		try(
@@ -60,7 +62,6 @@ public  abstract class ExcelPoi {
 
 				)
 		{
-			DataFormat formatNumber = work.createDataFormat();
 	
 		
 			for (Val val : set) {
@@ -71,9 +72,10 @@ public  abstract class ExcelPoi {
 				if (sheet==null) {
 					sheet = work.createSheet(val.getName());
 				}
+				
 				int line =val.getLine(); 
 				if(val.getMap()== null ) {
-					System.out.println("Erro "+val.getName() + " map null");
+					System.err.println("Erro "+val.getName() + " map null");
 					continue;
 				}
 				for (Entry<Integer, List<String>> entry : val.getMap().entrySet()) {
@@ -86,11 +88,13 @@ public  abstract class ExcelPoi {
 					int collumnCell = val.getCol();
 					for (String row2 : entry.getValue()) {
 
-						Cell cell = row.createCell(collumnCell);
-						
+						Cell cell = row.getCell(collumnCell);
+						if (cell == null) {
+							cell= row.createCell(collumnCell);
+						}
 						
 						if( row2!=null && row2.matches("^[0-9]*$") ){
-							cell.setCellValue(Integer.parseInt(row2));
+							cell.setCellValue(Long.parseLong(row2));
 							
 						
 							//System.out.println(row2+ " numeric");
@@ -104,16 +108,63 @@ public  abstract class ExcelPoi {
 				}
 
 			}
-
+			
 			File newFile = new File(template.getPath()+"_"+ date +".xlsx");
-
-			//newFile.createNewFile();
+			
+			addTimeline(formatLastMonit, work);
+			
 			FileOutputStream out = new FileOutputStream(newFile);
-
+			work.setForceFormulaRecalculation(true);
 			work.write(out);
 			System.out.println("ficheiro Criado: " + newFile.getName());
 		}
 
+	}
+	private static void addTimeline(SimpleDateFormat formatLastMonit, Workbook work) {
+		System.out.println("Add timeline");
+		Calendar c = Calendar.getInstance();
+		Calendar lastMonitDate = Calendar.getInstance();
+		lastMonitDate.add(Calendar.DATE, -1);
+		
+		switch (lastMonitDate.get(Calendar.DAY_OF_WEEK)) {
+		case 1:
+			lastMonitDate.add(Calendar.DATE, -2);
+			break;
+		case 7:
+			lastMonitDate.add(Calendar.DATE, -1);
+			break;
+		default:
+			break;
+		}
+		System.out.println(lastMonitDate.getTime());
+
+		Sheet main = work.getSheet("Overview");
+		Row row = main.getRow(2);
+		Cell cell = row.getCell(1);
+		cell.setCellValue(lastMonitDate.getTime());
+		//newFile.createNewFile();
+		
+		Sheet timeline = work.getSheet("Timeline");
+		Row rowTimeLine = timeline.getRow(timeline.getLastRowNum()); //72
+		System.out.println(rowTimeLine.getRowNum());//16
+
+		int lastRow = timeline.getLastRowNum();
+		List<String> listOkVal = new ArrayList<>(Arrays.asList("'VAL1'!F1", "'VAL2'!E1","'VAL3'!F1","'VAL4'!L1","'VAL5'!M1","'VAL6'!M1","'VAL7'!M1","'VAL8'!M1","'VAL9'!I1","'VAL10'!I1","'VAL11'!I1","'VAL12'!K1"));
+		
+		int lastCell = rowTimeLine.getLastCellNum();
+		rowTimeLine = timeline.getRow(lastRow-12);
+		Cell headTime = rowTimeLine.createCell(lastCell);
+		headTime.setCellValue(formatLastMonit.format(c.getTime()));
+		
+		int countListOk = 0;
+		for (int i = (lastRow-11); i <= lastRow; i++) {
+			rowTimeLine = timeline.getRow(i);
+			Cell cellTime= rowTimeLine.createCell(lastCell);
+			cellTime.setCellFormula(listOkVal.get(countListOk));
+			countListOk++;
+			
+		}
+		
 	}
 	public static File fileXml = new File("D:\\FileEx\\TABLE_EXPORT_DATA_2.xml");
 
@@ -146,7 +197,7 @@ public  abstract class ExcelPoi {
 					fw.write(subString);
 					System.out.println("Ficheiro Criado " +newFile.getName()+" em "+newFile.getPath());
 				} catch (Exception e) {
-					// TODO: handle exception
+					e.printStackTrace();
 				}finally {
 					if(fw!=(null))fw.close();
 				}
@@ -188,7 +239,7 @@ public  abstract class ExcelPoi {
 				
 			}
 		}catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 

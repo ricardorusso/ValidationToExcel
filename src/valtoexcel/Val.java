@@ -15,7 +15,7 @@ public class Val {
 	public void setMap(SortedMap<Integer, List<String>> map) {
 		this.map = map;
 	}
-
+	private Status status;
 	private File file;
 	private String name;
 	private int line = 1; 
@@ -91,5 +91,15 @@ public class Val {
 	public void setCol(int col) {
 		this.col = col;
 	}
-	
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	private enum Status {
+		OK,
+		NOK
+	}
 }

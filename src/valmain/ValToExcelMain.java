@@ -7,26 +7,34 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.BreakIterator;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.hssf.record.PageBreakRecord.Break;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFTable;
 
-import valtoexcel.Constants;
 import valtoexcel.ExcelPoi;
 import valtoexcel.Val;
 
 public class ValToExcelMain {
-	private static File template = new File("D:\\FileEx\\Livro1"+".xlsx");
+	private static File template = new File("D:\\FileEx\\MonitorCSW_v12_unres1"+".xlsx");
 	private static File fileSql = new File("D:\\FileEx\\sqlQuerys.sql");
-	public static void main(String[] args) throws IOException, SQLException, EncryptedDocumentException, InvalidFormatException {
+	public static void main(String[] args) throws IOException, SQLException, InvalidFormatException {
+		getTresholds(template);
+
+		LocalTime start= LocalTime.now();
 
 		//		connection 
 		String user ="NOVO";
@@ -43,60 +51,138 @@ public class ValToExcelMain {
 		set.add(val1);
 		set.add(val2);
 		set.add(val3);
-//		set.add(val4);
-//		set.add(val5);
+		set.add(val4);
+		set.add(val5);
 
 		ExcelPoi.setQuerysForValFromFile(fileSql , set);
-		Connection c = DriverManager.getConnection(url, user, pass);
-		
-		for (Val val : set) {
 
-			SortedMap<Integer, List<String>> map = new TreeMap<>();
-			try 
-			(
-					Statement st = c.prepareStatement(val.getQuery());
-					)
-			{				//c.setReadOnly(true);
+		try(		Connection c = DriverManager.getConnection(url, user, pass);
+				) 
 
-			System.out.println("Connected"  );
+		{
 
-			try (
-					ResultSet result =  st.executeQuery(val.getQuery());
+			boolean onlyOnce = false;
+			for (Val val : set) {
 
-					){
-				System.out.println(val.getName() + " Query Executed");
-				int line = 0;
-				while (result.next()) {
-					line++;
-					List<String> list2 = new ArrayList<>();
+				SortedMap<Integer, List<String>> map = new TreeMap<>();
+				try 
+				(
+						Statement st = c.prepareStatement(val.getQuery());
+						)
+				{				
+					c.setReadOnly(true);
 					
-					resultSql:
-					for (int i = 1; i <= val.getMaxCollumn(); i++) {
-						try {
-							list2.add(result.getString(i));
-							//System.out.println(result.getString(i));
-						} catch (SQLException e) {
-							System.out.println("Coluna " +i +" Não existe ");
-							val.setMaxCollumn(i-1);
-							break resultSql;
-						}				
+					if (!onlyOnce && !c.isClosed()) {
+						System.out.println("-----------------Connected---------------"+ c.getMetaData().getURL()  );
+						onlyOnce=true;
 					}
-					//System.out.println(list2);
-					map.put(line,list2);
+					
+
+					try (
+							ResultSet result =  st.executeQuery(val.getQuery());
+
+							){
+						System.out.println(val.getName() + " Query Executed");
+						int line = 0;
+						while (result.next()) {
+							line++;
+							List<String> list2 = new ArrayList<>();
+
+							resultSql:
+								for (int i = 1; i <= val.getMaxCollumn(); i++) {
+									try {
+										list2.add(result.getString(i));
+										//System.out.println(result.getString(i));
+									} catch (SQLException e) {
+										System.err.println("Coluna " +i +" Não existe ");
+										val.setMaxCollumn(i-1);
+										break resultSql;
+									}				
+								}
+							//System.out.println(list2);
+							map.put(line,list2);
+						}
+
+					}
+					val.setMap(map);
+					System.out.println("MAp: "+val.getMap());
+					//System.out.println(val.getName() + " ");// +val.getMap().values());
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
 			}
-			val.setMap(map);
-			System.out.println("MAp: "+val.getMap());
-			//System.out.println(val.getName() + " ");// +val.getMap().values());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
+
 		ExcelPoi.whiteMapValExel(set,template);
+
+
+		Duration diff = Duration.between(start, LocalTime.now());
+		System.out.println("Duração: "+diff.toMinutes()+":"+diff.getSeconds()+"s");
+
+	}
+	private static void getTresholds(File file) throws EncryptedDocumentException, InvalidFormatException, IOException {
+
+		Workbook work = WorkbookFactory.create(file);
+		XSSFSheet sheet = (XSSFSheet) work.getSheet("Legenda");
+		List<XSSFTable> tables = sheet.getTables();
+		for (XSSFTable t : tables) {
+			if(t.getDisplayName().equals("TblOkNok")){
+				continue;
+			}
+			
+			int star = t.getStartRowIndex()+1;
+			int end = t.getEndRowIndex();
+			LinkedHashMap<String, String> treshMap = new LinkedHashMap<>();
+			for (int i = star; i <= end; i++) {
+				Row row = sheet.getRow(i);
+				Cell cell1 = row.getCell(t.getStartColIndex());
+				String valueCell1 = "";
+				String valueCell2 = "";
+				if(cell1 != null) {
+					
+					switch (cell1.getCellTypeEnum()) {
+					case NUMERIC :
+						valueCell1 = Double.toString(cell1.getNumericCellValue());
+						break;
+					case STRING:
+						valueCell1 = cell1.getStringCellValue();
+						break;
+					default:
+						break;
+					}
+					
+				}
+				Cell cell2 = row.getCell(t.getEndColIndex());
+				if(cell2 != null) {
+					
+					switch (cell2.getCellTypeEnum()) {
+					case NUMERIC :
+						valueCell2 = Double.toString(cell2.getNumericCellValue());
+						break;
+					case STRING:
+						valueCell2 = cell2.getStringCellValue();
+						break;
+					default:
+						break;
+					}
+					
+				}
+				treshMap.put(valueCell1, valueCell2);
+				
+			}
+			System.out.println(treshMap);
+			
+		}
+
+
 	}
 
+
 }
+
+
 
 
