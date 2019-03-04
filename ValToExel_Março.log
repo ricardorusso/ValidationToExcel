@@ -1,0 +1,165 @@
+[2019-03-03 16:14:22] [INFO   ] Validation To Excel Executed   Sun Mar 03 16:14:22 GMT 2019 
+[2019-03-03 16:14:26] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 16:15:29] [INFO   ] Validation To Excel Executed   Sun Mar 03 16:15:29 GMT 2019 
+[2019-03-03 16:15:33] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 16:15:33] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 16:15:33] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 16:15:33] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 16:15:33] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 16:15:33] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 20:26:59] [INFO   ] Validation To Excel Executed   Sun Mar 03 20:26:59 GMT 2019 
+[2019-03-03 20:27:03] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 20:27:04] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 20:27:04] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 20:27:04] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 20:27:04] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 20:27:04] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 20:30:33] [INFO   ] Validation To Excel Executed   Sun Mar 03 20:30:33 GMT 2019 
+[2019-03-03 20:30:36] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 20:30:37] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 20:30:37] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 20:30:37] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 20:30:37] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 20:30:37] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:26:44] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:26:44 GMT 2019 
+[2019-03-03 23:26:51] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:26:52] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:26:52] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:26:52] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:26:52] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:26:52] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:28:44] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:28:44 GMT 2019 
+[2019-03-03 23:28:51] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:28:50 GMT 2019 
+[2019-03-03 23:28:56] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:28:57] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:28:57] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:28:57] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:28:57] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:28:57] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:29:47] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:29:47 GMT 2019 
+[2019-03-03 23:29:53] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:29:54] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:29:54] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:29:54] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:29:54] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:29:54] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:38:22] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:38:22 GMT 2019 
+[2019-03-03 23:38:28] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:38:29] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:38:29] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:38:29] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:38:29] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:38:29] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:47:34] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:47:34 GMT 2019 
+[2019-03-03 23:47:38] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:47:39] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:47:39] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:47:39] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:47:39] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:47:39] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:48:40] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:48:40 GMT 2019 
+[2019-03-03 23:48:44] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:48:45] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:48:45] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:48:45] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:48:45] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:48:45] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:50:24] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:50:24 GMT 2019 
+[2019-03-03 23:50:29] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:50:30] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:50:30] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:50:30] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:50:30] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:50:30] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:51:15] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:51:15 GMT 2019 
+[2019-03-03 23:51:20] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:51:21] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:51:21] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:51:21] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:51:21] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:51:21] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:52:12] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:52:11 GMT 2019 
+[2019-03-03 23:52:20] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:52:20 GMT 2019 
+[2019-03-03 23:52:25] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:52:26] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:52:26] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:52:26] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:52:26] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:52:26] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:53:03] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:53:03 GMT 2019 
+[2019-03-03 23:53:07] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:53:08] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:53:08] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:53:08] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:53:08] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:53:08] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:54:21] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:54:21 GMT 2019 
+[2019-03-03 23:54:25] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:54:27] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:54:27] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:54:27] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:54:27] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:54:27] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:55:31] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:55:30 GMT 2019 
+[2019-03-03 23:55:38] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:55:39] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:55:39] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:55:39] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:55:39] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:55:39] [INFO   ] VAL4 4 Resultados 
+[2019-03-03 23:56:05] [INFO   ] Validation To Excel Executed   Sun Mar 03 23:56:05 GMT 2019 
+[2019-03-03 23:56:09] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-03 23:56:10] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-03 23:56:10] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:56:10] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:56:10] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-03 23:56:10] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:02:34] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:02:34 GMT 2019 
+[2019-03-04 00:02:37] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:02:38] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:02:38] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:02:38] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:02:38] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:02:38] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:04:08] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:04:07 GMT 2019 
+[2019-03-04 00:04:11] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:04:12] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:04:12] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:04:12] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:04:12] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:04:12] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:05:24] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:05:24 GMT 2019 
+[2019-03-04 00:05:28] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:05:29] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:05:29] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:05:29] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:05:29] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:05:29] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:07:25] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:07:25 GMT 2019 
+[2019-03-04 00:07:28] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:07:29] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:07:29] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:07:29] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:07:29] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:07:29] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:08:19] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:08:19 GMT 2019 
+[2019-03-04 00:08:23] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:08:23] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:08:23] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:08:23] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:08:23] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:08:23] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:09:26] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:09:26 GMT 2019 
+[2019-03-04 00:09:30] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:09:30] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:09:30] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:09:30] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:09:30] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:09:30] [INFO   ] VAL4 4 Resultados 
+[2019-03-04 00:10:20] [INFO   ] Validation To Excel Executed   Mon Mar 04 00:10:20 GMT 2019 
+[2019-03-04 00:10:24] [SEVERE ] Erro de E/S: The Network Adapter could not establish the connection 
+[2019-03-04 00:10:24] [INFO   ] -----------------------Resumo NOK----------------------- 
+[2019-03-04 00:10:24] [INFO   ] VAL1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:10:24] [INFO   ] VAL2 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:10:24] [INFO   ] VAL2.1 CM_PT_UPLREADS 5000.0 | CM_SPA_E 5000.0 | CM_SPA_E_SWINOT 5000.0 | CM_POR_G_H1_N6005 5000.0 |  
+[2019-03-04 00:10:24] [INFO   ] VAL4 4 Resultados 
