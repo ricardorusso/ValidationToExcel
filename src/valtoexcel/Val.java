@@ -15,6 +15,7 @@ public class Val {
 	public void setMap(SortedMap<Integer, List<String>> map) {
 		this.map = map;
 	}
+	private String fullName;
 	private StatusVal status;
 	private File file;
 	private String name;
@@ -58,7 +59,7 @@ public class Val {
 		this.query = query;
 	}
 	
-	public Val( String name, int line, int col ,  int maxCollumn, String query) {
+	public Val( String name, int line, int col ,  int maxCollumn, String query, String fullName) {
 		super();
 		//this.file = file;
 		this.name = name;
@@ -66,6 +67,7 @@ public class Val {
 		this.setLine(line);
 		this.maxCollumn = maxCollumn;
 		this.query = query;
+		this.fullName = fullName;
 	}
 	public Val( String name, int line, int col ,  int maxCollumn) {
 		super();
@@ -97,6 +99,13 @@ public class Val {
 
 	public void setStatus(StatusVal status) {
 		this.status = status;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	public enum StatusVal {
 		
