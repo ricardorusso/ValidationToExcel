@@ -35,7 +35,7 @@ import valtoexcel.Val.StatusVal;
 public abstract class ExcelPoi {
 	private static final Logger logger = ValToExcelMain.logger;
 	private static final String VAL2_1 = "VAL2.1";
-	private static final String fileNameTemplateNew = "MonitorCSW_v12";
+	//private static final String fileNameTemplateNew = "MonitorCSW_v12";
 	/**
 	 * 
 	 * 
@@ -63,8 +63,9 @@ public abstract class ExcelPoi {
 				)
 		{
 
-
+			
 			for (Val val : set) {
+				boolean sheetExist = true;
 				//listOkVal.add((val.getStatus().equals(StatusVal.OK)?"OK":"NOK"));
 				if(val.getName().equals(VAL2_1)&&val.getStatus().equals(StatusVal.NOK)&&listOkVal.get(listOkVal.size()-1).equals("OK")) {
 					listOkVal.remove(listOkVal.size()-1);
@@ -82,6 +83,8 @@ public abstract class ExcelPoi {
 				}
 				if (sheet==null) {
 					sheet = work.createSheet(val.getName());
+					sheetExist=false;
+					logger.info("Sheet dont exist " + val.getName());
 				}
 
 				int line =val.getLine(); 
@@ -89,14 +92,25 @@ public abstract class ExcelPoi {
 					System.err.println("Erro "+val.getName() + " map null");
 					continue;
 				}
+				boolean headerAdded = true;
 				for (Entry<Integer, List<String>> entry : val.getMap().entrySet()) {
-
+					
 					Row row = sheet.getRow(line);
 					if (row == null) {
 						row = sheet.createRow(line);
 					}
-					//System.out.println(line);
+					
 					int collumnCell = val.getCol();
+					if (!sheetExist && headerAdded) {
+						addHeader(row,collumnCell, val.getHeadNames());
+						line++;
+						row = sheet.getRow(line);
+						if (row == null) {
+							row = sheet.createRow(line);
+						}
+						headerAdded = false;
+						
+					}
 					for (String row2 : entry.getValue()) {
 
 						Cell cell = row.getCell(collumnCell);
@@ -137,6 +151,19 @@ public abstract class ExcelPoi {
 			logger.info("ficheiro Criado: " + newFile.getAbsolutePath());
 		}
 
+	}
+	private static void addHeader(Row row, int collumnCell, List<String> headNames) {
+		logger.info("Header names added");
+		int newCont = collumnCell;
+		for (String string : headNames) {
+
+			Cell cell = (row.getCell(newCont)==null) ?row.createCell(newCont) : row.getCell(newCont) ;
+			
+			cell.setCellValue(string);
+			newCont++;
+		}
+		
+		
 	}
 	private static void addTimeline( Workbook work, List<String> listOkVal) {
 		
@@ -224,9 +251,7 @@ public abstract class ExcelPoi {
 //		}
 		
 		Cell headTime = rowTimeLine.createCell(lastCell);
-		
-		
-		
+
 		//headTime.setCellValue(formatLastMonit.format(c.getTime()));
 		headTime.setCellValue(c.getTime());
 		headTime.setCellStyle(cellStyle);
@@ -312,7 +337,7 @@ public abstract class ExcelPoi {
 				String substring =  strBu.substring(start+val.getName().length(), end);
 
 				String cleanString = substring.replace('-', ' ').trim();
-				if (val.getQuery()==null ) {
+				if (val.getQuery()==null || val.getQuery().equals("")) {
 					val.setQuery(cleanString);
 					logger.info("Query: "+val.getName() + " "+cleanString+"\n");
 

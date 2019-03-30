@@ -17,22 +17,15 @@ public class Val {
 	}
 	private String fullName;
 	private StatusVal status;
-	private File file;
+
 	private String name;
 	private int line = 1; 
 	private int col = 1 ;
 	private int maxCollumn;
 	private SortedMap<Integer, List<String>> map;
-
+	private List<String> headNames;
 	private String query;
 
-	public File getFile() {
-		return file;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
-	}
 
 	public String getName() {
 		return name;
@@ -59,23 +52,23 @@ public class Val {
 		this.query = query;
 	}
 	
-	public Val( String name, int line, int col ,  int maxCollumn, String query, String fullName) {
+	public Val( String name, int line, int col , String query, String fullName) {
 		super();
 		//this.file = file;
 		this.name = name;
 		this.col= col;
 		this.setLine(line);
-		this.maxCollumn = maxCollumn;
+	
 		this.query = query;
 		this.fullName = fullName;
 	}
-	public Val( String name, int line, int col ,  int maxCollumn) {
+	public Val( String name, int line, int col) {
 		super();
 		//this.file = file;
 		this.name = name;
 		this.col= col;
 		this.setLine(line);
-		this.maxCollumn = maxCollumn;
+	
 		
 	}
 	public int getLine() {
@@ -106,6 +99,13 @@ public class Val {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	public List<String> getHeadNames() {
+		return headNames;
+	}
+
+	public void setHeadNames(List<String> headNames) {
+		this.headNames = headNames;
 	}
 	public enum StatusVal {
 		

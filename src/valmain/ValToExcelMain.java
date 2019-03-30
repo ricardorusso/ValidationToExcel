@@ -1,6 +1,8 @@
 package valmain;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,6 +27,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.ConsoleHandler;
@@ -34,7 +38,6 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -48,56 +51,77 @@ import valtoexcel.Val.StatusVal;
 
 public class ValToExcelMain {
 	public static final Logger logger = Logger.getGlobal();
-	//private static File template = new File("D:\\FileEx\\MonitorCSW_v12_unres1"+".xlsx");
-	// static File template2 = new File("C:\\Users\\Ricardo Russo\\Google Drive\\Ficheiros Empresas\\Accenture\\MonitorCSW_v12_unres1.xlsx");
-	//private static File fileSql = new File("D:\\FileEx\\sqlQuerys.sql");
+	
 	public static String dirForFinalFile;
 
-	public static void main(String[] args) throws IOException, SQLException, InvalidFormatException {
+	public static void main(String[] args) throws IOException, SQLException, InvalidFormatException, URISyntaxException {
 		LocalTime start= LocalTime.now();
 		configLogger();
-
+		
 		String dstOfTemplate = configDir();
-		
-		
-
 		File fileTemplate = new File(dstOfTemplate);
+
 		List<HashMap<String, String>> listTresh = getTresholds(fileTemplate);
 
+		LinkedHashSet<Val> set = null;
 
-		//		connection 
-		String user ="NOVO";
-		String pass = "novo";
-		String url = "jdbc:oracle:thin:@//localhost:1521/xe";
+		InputStream inSval = ValToExcelMain.class.getResourceAsStream("/val.txt");
+		String dstValtxt = configDirValTxt(inSval);
 
-		Val val1 = new Val( "VAL1", 3 , 0, 2, "SELECT   * FROM job_history ", "VAL1: Processo Não terminado com última mensagem a NotValidated");
-		Val val2 = new Val( "VAL2", 4, 0, 3);
-		Val val2_1 = new Val( "VAL2.1", 4 , 5, 2);
-		Val val4 = new Val( "VAL4", 3, 0, 2);
-		Val val5 = new Val( "VAL5", 3 , 0, 3);
-		/* For testing */
+		try {
+			set = loadValsFromFile(new File(dstValtxt));
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e.getStackTrace());
 
+			try {
+				set = loadVal();
+				logger.info("Load default Query from Program");
+			} catch (Exception e2) {
 
-		LinkedHashSet<Val> set = new LinkedHashSet<>();
-		set.add(val1);
-		set.add(val2);
-		set.add(val2_1);
-		set.add(val4);
-		set.add(val5);
+				logger.log(Level.SEVERE, e2.getMessage());
+				return;
+			}
 
+		}
 
 		InputStream in=ValToExcelMain.class.getResourceAsStream("/sqlQuerys.sql");
 		InputStreamReader iSr = new InputStreamReader(in);
 
+		Properties prop = new Properties();
+		InputStream inProp = ValToExcelMain.class.getResourceAsStream("/connectpro.properties");
+		prop.load(inProp);
+
+
+		String url = prop.getProperty("url");
+
 		ExcelPoi.setQuerysForValFromFile(iSr , set);
 
-		try(		Connection c = DriverManager.getConnection(url, user, pass);
+		Scanner scan =  new Scanner(System.in);
+
+		boolean out = false;
+		do {
+			System.out.println("Continuar ? ");
+			String choice  = scan.next();
+
+			if (choice.equalsIgnoreCase("s")) {
+				out = true;
+			}else if(choice.equalsIgnoreCase("n")){
+				System.exit(1);
+			}
+
+		} while (!out);
+		scan.close();
+
+		try(		Connection c = DriverManager.getConnection(url,prop);
+
 				) 
 
 		{
 			boolean onlyOnce = false;
 			for (Val val : set) {
 				SortedMap<Integer, List<String>> map = new TreeMap<>();
+				List<String> listHead = new ArrayList<>();
 				try 
 				(
 						Statement st = c.prepareStatement(val.getQuery());
@@ -110,13 +134,19 @@ public class ValToExcelMain {
 						onlyOnce=true;
 					}
 
-
 					try (
 							ResultSet result =  st.executeQuery(val.getQuery());
 
 							){
 						logger.info(val.getName() + " -----------------Query Executed-----------------");
 						int line = 0;
+						int colCount = result.getMetaData().getColumnCount();
+						val.setMaxCollumn(colCount);
+						for (int i = 1; i <= colCount; i++) {
+							String res = result.getMetaData().getColumnName(i);
+							listHead.add(res);
+						}
+						
 						while (result.next()) {
 							line++;
 							List<String> list2 = new ArrayList<>();
@@ -137,20 +167,20 @@ public class ValToExcelMain {
 						}
 
 					}
-
+					val.setHeadNames(listHead);
 					val.setMap(map);
 					logger.info("ResultMap: "+val.getName()+" "+val.getMap());
 					//System.out.println(val.getName() + " ");// +val.getMap().values());
 				} catch (Exception e) {
 					logger.log(Level.SEVERE,e.getMessage(), e.getStackTrace());
-					
+
 				}
 
 			}
 		}catch (Exception e) {
-			
+
 			logger.log(Level.SEVERE,e.getMessage(), e.getStackTrace());
-		
+
 			return;
 		}
 		LinkedHashMap<String, StringBuilder> linkMapResumeNOK = checkStatus(set, listTresh);
@@ -163,6 +193,97 @@ public class ValToExcelMain {
 
 
 	}
+
+	private static LinkedHashSet<Val> loadValsFromFile(File file) throws IOException  {
+		//FileReader frVal  = new FileReader(new File("D:\\FileEx\\Val.txt"));
+
+		FileReader fr = new FileReader(file);
+		BufferedReader brVal =  new BufferedReader(fr);
+		String strVal = "";
+		int count = 0;
+		LinkedHashSet<Val> setVal =  new LinkedHashSet<>();
+		while ((strVal=brVal.readLine())!=null) {
+			if(count==0) {
+				count++;
+				continue;			
+			}
+
+			
+			String [] strArr = strVal.split(",",4);
+			for (int i = 0; i < strArr.length; i++) {
+				if (i==3) {
+					strArr[i] = strArr[i].replace(';', ' ');
+					continue;
+				}
+				strArr[i]= strArr[i].replace('"', ' ');
+				strArr[i] = strArr[i].replace(';', ' ');
+				strArr[i] = strArr[i].replace(')', ' ');
+				strArr[i] = strArr[i].replace('(', ' ');
+				strArr[i] = strArr[i].replace('-', ' ');
+				
+			}
+			String name  = strArr[0].trim();
+			int line = Integer.parseInt(strArr[1].trim());
+			int col = Integer.parseInt(strArr[2].trim());
+			
+			Val val = new Val(name, line, col);
+
+
+			if(strArr.length>3 && strArr[3].toLowerCase().contains("select")) {
+				val.setQuery(strArr[3]);
+			}
+
+			setVal.add(val);
+		}
+
+		if (setVal.isEmpty()) {
+
+			logger.warning("Map vazio");
+			brVal.close();
+			return loadVal();
+		}
+		brVal.close();
+		logger.info("Loaded Val from File");
+		return setVal;
+	}
+	private static LinkedHashSet<Val> loadVal() {
+		logger.info("Load predefined validations");
+		Val val1 = new Val( "VAL1", 3 , 0,  "SELECT   * FROM job_history ", "VAL1: Processo Não terminado com última mensagem a NotValidated");
+		Val val2 = new Val( "VAL2", 4, 0 );
+		Val val2_1 = new Val( "VAL2.1", 4 , 5);
+		Val val4 = new Val( "VAL4", 3, 0);
+		Val val5 = new Val( "VAL5", 3 , 0);
+		/* For testing */
+
+
+		LinkedHashSet<Val> set = new LinkedHashSet<>();
+		set.add(val1);
+		set.add(val2);
+		set.add(val2_1);
+		set.add(val4);
+		set.add(val5);
+		return set;
+	}
+	private static String configDirValTxt(InputStream inSval) throws URISyntaxException, IOException {
+		String dirTxt = ValToExcelMain.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+
+		String dirTxtPar =  new File(dirTxt).getParent();
+
+		new File(dirTxtPar+"\\Monitorizações").mkdirs();
+
+		String dst = dirTxtPar+"\\Monitorizações\\Val.txt";
+		logger.info("Diretorio do txt " + dst);
+		if (!new File(dst).exists()) {
+			Files.copy(inSval, Paths.get(dst));
+			
+			logger.info("Txt criado " + new File(dst).getName());
+		}else if(new File(dst).exists() && new File(dst).length()<1){
+			Files.copy(inSval, Paths.get(dst), StandardCopyOption.REPLACE_EXISTING);
+			logger.log(Level.CONFIG, "Tamanho invalido Val.txt");
+		}
+
+		return dst;
+	}
 	private static String configDir() throws IOException {
 		String dirOfJarParent = "";
 
@@ -173,9 +294,9 @@ public class ValToExcelMain {
 
 			logger.log(Level.SEVERE, e1.getMessage(), e1.getCause());
 		}
-
-		dirOfJarParent = new File(dirOfJarParent).getParent();
 		
+		dirOfJarParent = new File(dirOfJarParent).getParent();
+
 		//create Directory//
 		Calendar mesForDir = Calendar.getInstance();
 		SimpleDateFormat formatMes = new SimpleDateFormat("MMMM");
@@ -183,12 +304,12 @@ public class ValToExcelMain {
 		dirForFinalFile = dirOfJarParent+"\\Monitorizações\\"+formatMes.format(mesForDir.getTime());
 		String dirForTemplate = dirOfJarParent+"\\Monitorizações";
 		logger.info("Directorio do Template " +dirForTemplate);
-		
+
 		InputStream inputS= ValToExcelMain.class.getResourceAsStream("/Template.xlsx");
 
 		String dst = dirForTemplate+"\\Template.xlsx";
 		if(!new File(dst).exists()) {
-			System.out.println("Template criado");
+			logger.info("Template criado");
 			Files.copy(inputS, Paths.get(dst) );
 		}else if (new File(dst).exists()&&(new File(dst).length())<=100) {
 
@@ -230,7 +351,8 @@ public class ValToExcelMain {
 	}
 	private static List<HashMap<String, String>> getTresholds(File file) throws InvalidFormatException, IOException {
 
-		
+
+		@SuppressWarnings("resource")
 		XSSFWorkbook work = new XSSFWorkbook(file);
 		XSSFSheet sheet = work.getSheet("Legenda");
 		List<XSSFTable> tables = sheet.getTables();
