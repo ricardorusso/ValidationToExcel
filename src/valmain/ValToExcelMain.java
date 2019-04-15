@@ -28,7 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.ConsoleHandler;
@@ -38,6 +37,7 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -51,13 +51,13 @@ import valtoexcel.Val.StatusVal;
 
 public class ValToExcelMain {
 	public static final Logger logger = Logger.getGlobal();
-	
+
 	public static String dirForFinalFile;
 
 	public static void main(String[] args) throws IOException, SQLException, InvalidFormatException, URISyntaxException {
 		LocalTime start= LocalTime.now();
 		configLogger();
-		
+
 		String dstOfTemplate = configDir();
 		File fileTemplate = new File(dstOfTemplate);
 
@@ -97,27 +97,28 @@ public class ValToExcelMain {
 
 		ExcelPoi.setQuerysForValFromFile(iSr , set);
 
-		Scanner scan =  new Scanner(System.in);
-
-		boolean out = false;
-		do {
-			System.out.println("Continuar ? ");
-			String choice  = scan.next();
-
-			if (choice.equalsIgnoreCase("s")) {
-				out = true;
-			}else if(choice.equalsIgnoreCase("n")){
-				System.exit(1);
-			}
-
-		} while (!out);
-		scan.close();
+		//		Scanner scan =  new Scanner(System.in);
+		//
+		//		boolean out = false;
+		//		do {
+		//			System.out.println("Continuar ? ");
+		//			String choice  = scan.next();
+		//
+		//			if (choice.equalsIgnoreCase("s")) {
+		//				out = true;
+		//			}else if(choice.equalsIgnoreCase("n")){
+		//				System.exit(1);
+		//			}
+		//
+		//		} while (!out);
+		//		scan.close();
 
 		try(		Connection c = DriverManager.getConnection(url,prop);
 
 				) 
 
 		{
+			
 			boolean onlyOnce = false;
 			for (Val val : set) {
 				SortedMap<Integer, List<String>> map = new TreeMap<>();
@@ -146,7 +147,7 @@ public class ValToExcelMain {
 							String res = result.getMetaData().getColumnName(i);
 							listHead.add(res);
 						}
-						
+
 						while (result.next()) {
 							line++;
 							List<String> list2 = new ArrayList<>();
@@ -172,7 +173,7 @@ public class ValToExcelMain {
 					logger.info("ResultMap: "+val.getName()+" "+val.getMap());
 					//System.out.println(val.getName() + " ");// +val.getMap().values());
 				} catch (Exception e) {
-					logger.log(Level.SEVERE,e.getMessage(), e.getStackTrace());
+					logger.log(Level.SEVERE,e.getMessage(), e);
 
 				}
 
@@ -208,7 +209,7 @@ public class ValToExcelMain {
 				continue;			
 			}
 
-			
+
 			String [] strArr = strVal.split(",",4);
 			for (int i = 0; i < strArr.length; i++) {
 				if (i==3) {
@@ -220,12 +221,12 @@ public class ValToExcelMain {
 				strArr[i] = strArr[i].replace(')', ' ');
 				strArr[i] = strArr[i].replace('(', ' ');
 				strArr[i] = strArr[i].replace('-', ' ');
-				
+
 			}
 			String name  = strArr[0].trim();
 			int line = Integer.parseInt(strArr[1].trim());
 			int col = Integer.parseInt(strArr[2].trim());
-			
+
 			Val val = new Val(name, line, col);
 
 
@@ -275,7 +276,7 @@ public class ValToExcelMain {
 		logger.info("Diretorio do txt " + dst);
 		if (!new File(dst).exists()) {
 			Files.copy(inSval, Paths.get(dst));
-			
+
 			logger.info("Txt criado " + new File(dst).getName());
 		}else if(new File(dst).exists() && new File(dst).length()<1){
 			Files.copy(inSval, Paths.get(dst), StandardCopyOption.REPLACE_EXISTING);
@@ -294,7 +295,7 @@ public class ValToExcelMain {
 
 			logger.log(Level.SEVERE, e1.getMessage(), e1.getCause());
 		}
-		
+
 		dirOfJarParent = new File(dirOfJarParent).getParent();
 
 		//create Directory//
@@ -308,10 +309,11 @@ public class ValToExcelMain {
 		InputStream inputS= ValToExcelMain.class.getResourceAsStream("/Template.xlsx");
 
 		String dst = dirForTemplate+"\\Template.xlsx";
+		System.out.println(new File(dst).length());
 		if(!new File(dst).exists()) {
 			logger.info("Template criado");
 			Files.copy(inputS, Paths.get(dst) );
-		}else if (new File(dst).exists()&&(new File(dst).length())<=100) {
+		}else if (new File(dst).exists()&&(new File(dst).length())<=2000) {
 
 			Files.copy(inputS, Paths.get(dst) , StandardCopyOption.REPLACE_EXISTING);
 			logger.log(Level.CONFIG,"Tamanho invalido, template replaced");
@@ -330,7 +332,11 @@ public class ValToExcelMain {
 		ConsoleHandler ch = new ConsoleHandler();
 		ch.setLevel(Level.ALL);
 
-		SimpleFormatter ff = new SimpleFormatter() {
+		LogFormatter ff = new LogFormatter();
+
+		SimpleFormatter formaterFile = new SimpleFormatter() {
+
+
 			private static final String FORMAT = "[%1$tF %1$tT] [%2$-7s] %3$s %n";
 
 			@Override
@@ -338,12 +344,16 @@ public class ValToExcelMain {
 				return String.format(FORMAT,
 						new Date(lr.getMillis()),
 						lr.getLevel().getLocalizedName(),
-						lr.getMessage()
+						lr.getMessage() 
 						);
+
 			}
 		};
+
+
 		ch.setFormatter(ff);
-		fh.setFormatter(ff);
+
+		fh.setFormatter(formaterFile);
 		logger.addHandler(ch);
 		logger.addHandler(fh);
 		logger.setLevel(Level.ALL);
@@ -363,10 +373,10 @@ public class ValToExcelMain {
 				continue;
 			}
 
-			int star = t.getStartRowIndex()+1;
+			int start = t.getStartRowIndex()+1;
 			int end = t.getEndRowIndex();
 
-			for (int i = star; i <= end; i++) {
+			for (int i = start; i <= end; i++) {
 				XSSFRow row = sheet.getRow(i);
 				XSSFCell cell1 = row.getCell(t.getStartColIndex());
 				String valueCell1 = "";

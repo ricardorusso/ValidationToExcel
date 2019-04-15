@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -24,9 +25,11 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import valmain.ValToExcelMain;
 import valtoexcel.Val.StatusVal;
@@ -59,7 +62,7 @@ public abstract class ExcelPoi {
 				FileInputStream fi = new FileInputStream(template);
 
 				Workbook work = WorkbookFactory.create(fi);
-
+				
 				)
 		{
 
@@ -89,7 +92,7 @@ public abstract class ExcelPoi {
 
 				int line =val.getLine(); 
 				if(val.getMap()== null ) {
-					System.err.println("Erro "+val.getName() + " map null");
+					logger.severe("Erro "+val.getName() + " map null");
 					continue;
 				}
 				boolean headerAdded = true;
@@ -120,10 +123,6 @@ public abstract class ExcelPoi {
 
 						if( row2!=null && row2.matches("^[0-9]*$") ){
 							cell.setCellValue(Long.parseLong(row2));
-
-
-							//System.out.println(row2+ " numeric");
-
 						}else {
 							cell.setCellValue(row2);
 						}
@@ -143,11 +142,20 @@ public abstract class ExcelPoi {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
+				logger.log(Level.SEVERE,e.getMessage(), e);
 			}
 
 			FileOutputStream out = new FileOutputStream(newFile);
 			work.setForceFormulaRecalculation(true);
 			work.write(out);
+			try {
+				XSSFWorkbook templateWork = new XSSFWorkbook(new FileInputStream(template));
+				addTimeline(templateWork, listOkVal);
+				FileOutputStream outTem = new FileOutputStream(template);
+				templateWork.write(outTem);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE,e.getMessage(), e);
+			}
 			logger.info("ficheiro Criado: " + newFile.getAbsolutePath());
 		}
 
@@ -201,55 +209,33 @@ public abstract class ExcelPoi {
 		Row rowTimeLine = timeline.getRow(timeline.getLastRowNum()); //72
 		
 		System.out.println(rowTimeLine.getRowNum());//16
-		
+	
 		int lastRow = timeline.getLastRowNum();
 		System.out.println("Ultima linha " + lastRow);
-		int lastCell = rowTimeLine.getLastCellNum();
-		System.out.println("Ultima celula "+lastCell);
+		
 
+
+		List<String> timeLineList = new ArrayList<>();
 		
-		rowTimeLine = timeline.getRow(lastRow-12);
+		while (rowTimeLine==null || !rowTimeLine.getCell(0,MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().equals("Timeline")) {
+			lastRow--;
 		
-//		String dateBefore =rowTimeLine.getCell(lastCell-1).toString();
-//		
-//		System.out.println(dateBefore);
-//		Calendar dateBeforeCallendar =  Calendar.getInstance();
-//		dateBeforeCallendar.setTime(new Date(dateBefore));
-//		System.out.println(dateBeforeCallendar.getTime());
-//		if(dateBeforeCallendar.get(Calendar.MONTH)!=c.get(Calendar.MONTH)) {
-//			System.out.println(dateBeforeCallendar.get(Calendar.MONTH));
-//			System.out.println(c.get(Calendar.MONTH));
-//			lastRow = timeline.getLastRowNum() +2 ;
-//			lastCell = 1;
-//			rowTimeLine = timeline.createRow(lastRow);
-//			
-//			
-//			Cell cellTime = rowTimeLine.createCell(0);
-//			cellTime.setCellValue("Timeline");
-//			System.out.println("listOK size : "+ listOkVal.size());
-//			int count = 0;
-//			for (int i = lastRow; i <= lastRow+listOkVal.size(); i++) {
-//				if(i == lastRow) {
-//					Cell headTime = rowTimeLine.createCell(lastCell);
-//					headTime.setCellValue(c.getTime());
-//					headTime.setCellStyle(cellStyle);
-//					continue;
-//				}
-//				rowTimeLine = timeline.createRow(i);
-//				
-//				
-//				Cell cellNokOKDifMonth = rowTimeLine.createCell(1);
-//				cellNokOKDifMonth.setCellValue(listOkVal.get(count));
-//				cellNokOKDifMonth = rowTimeLine.createCell(0);
-//				cellNokOKDifMonth.setCellValue("VAL");
-//				count++;
-//			}
-//		
-//			return;
-//			
-//			
-//		}
+			rowTimeLine = timeline.getRow(lastRow);
 		
+			
+		}
+		System.out.println(timeLineList);
+		System.out.println(rowTimeLine.getRowNum());
+		int lastCell = rowTimeLine.getLastCellNum();
+		
+		System.out.println("Ultima celula "+lastCell);
+		
+		Cell headTimeBefore =  rowTimeLine.getCell(lastCell-1,MissingCellPolicy.RETURN_NULL_AND_BLANK );
+		if (c.get(Calendar.MONTH)!=headTimeBefore.getDateCellValue().getMonth()) {
+			System.out.println("Mes deferente");
+		}else {
+			
+		}
 		Cell headTime = rowTimeLine.createCell(lastCell);
 
 		//headTime.setCellValue(formatLastMonit.format(c.getTime()));
@@ -257,7 +243,7 @@ public abstract class ExcelPoi {
 		headTime.setCellStyle(cellStyle);
 
 		int countListOk = 0;
-		for (int i = (lastRow-11); i <= lastRow; i++) {
+		for (int i = (lastRow+1); i <(lastRow+1) + (listOkVal.size()); i++) {
 			if(countListOk>=listOkVal.size()) {
 				return;
 			}
