@@ -3,6 +3,7 @@ package valmain;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,6 +47,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.store.QueryDelegate.QueryInterface;
 
 import valtoexcel.ExcelPoi;
 import valtoexcel.Val;
@@ -53,6 +57,8 @@ public class ValToExcelMain {
 	public static final Logger logger = Logger.getGlobal();
 
 	public static String dirForFinalFile;
+	public static String dirOfJarParent; 
+	public static File hist;
 
 	public static void main(String[] args) throws IOException, SQLException, InvalidFormatException, URISyntaxException {
 		LocalTime start= LocalTime.now();
@@ -118,14 +124,15 @@ public class ValToExcelMain {
 				) 
 
 		{
-			
+
 			boolean onlyOnce = false;
 			for (Val val : set) {
 				SortedMap<Integer, List<String>> map = new TreeMap<>();
 				List<String> listHead = new ArrayList<>();
 				try 
 				(
-						Statement st = c.prepareStatement(val.getQuery());
+						PreparedStatement st = c.prepareStatement(val.getQuery());
+
 						)
 				{				
 					c.setReadOnly(true);
@@ -286,7 +293,7 @@ public class ValToExcelMain {
 		return dst;
 	}
 	private static String configDir() throws IOException {
-		String dirOfJarParent = "";
+
 
 		try {
 			dirOfJarParent = ValToExcelMain.class.getProtectionDomain().getCodeSource().getLocation()
@@ -329,13 +336,13 @@ public class ValToExcelMain {
 
 		LogManager.getLogManager().reset();
 		FileHandler fh = new FileHandler("ValToExel_"+mounth+".log",true);
+		
 		ConsoleHandler ch = new ConsoleHandler();
 		ch.setLevel(Level.ALL);
 
 		LogFormatter ff = new LogFormatter();
 
 		SimpleFormatter formaterFile = new SimpleFormatter() {
-
 
 			private static final String FORMAT = "[%1$tF %1$tT] [%2$-7s] %3$s %n";
 
@@ -352,7 +359,7 @@ public class ValToExcelMain {
 
 
 		ch.setFormatter(ff);
-
+		
 		fh.setFormatter(formaterFile);
 		logger.addHandler(ch);
 		logger.addHandler(fh);
@@ -468,7 +475,15 @@ public class ValToExcelMain {
 			}else if(!val.getName().equals("VAL9")) {
 				int size =val.getMap().size();
 				val.setStatus(StatusVal.NOK);
-				linkMapResumeNOK.put(val.getName(), new StringBuilder(size +" Resultados"));
+				List<String> adicionalInfo = new ArrayList<>();adicionalInfo.add(val.getHeadNames().get(0) + ": ");
+
+				for (Entry<Integer, List<String>> entry : val.getMap().entrySet()) {
+
+					adicionalInfo.add(entry.getValue().get(0));
+
+				}
+
+				linkMapResumeNOK.put(val.getName(), new StringBuilder(size +" Resultados " ).append(adicionalInfo) );
 			}
 			if(val.getStatus()==null) {
 				val.setStatus(StatusVal.OK);
@@ -476,7 +491,12 @@ public class ValToExcelMain {
 
 
 		}
-
+		try {
+			addToHistoricFile(linkMapResumeNOK);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return linkMapResumeNOK;
 
 	}
@@ -499,7 +519,89 @@ public class ValToExcelMain {
 
 
 	}
+
+	private static void addToHistoricFile(LinkedHashMap<String, StringBuilder> linkMapResumeNOK) throws IOException {
+		List<String> ignoreList =  Arrays.asList("VAL1","VAL2", "VAL2.1","VAL14");
+		new File(dirOfJarParent+"\\Historico").mkdirs();
+		File hist = new File(dirOfJarParent+"\\Historico\\historico.txt");
+
+
+		Calendar today = Calendar.getInstance();
+
+		SimpleDateFormat formart = new SimpleDateFormat("dd-MM-yyyy");
+		String todayString = formart.format(today.getTime());
+		try (
+				FileWriter fw = new FileWriter(hist,true);
+				BufferedReader br = new BufferedReader(new FileReader(hist));
+
+				)
+		{
+
+			String brLine;
+			boolean alreadyAddedToday= false;
+			while ((brLine=(br.readLine()))!=null) {
+				if(brLine.contains(todayString)) {
+					alreadyAddedToday= true;
+					logger.info("Já adicinado no historico");
+				}
+
+			}
+			if(!alreadyAddedToday) {
+				Iterator<Entry<String, StringBuilder> >it = linkMapResumeNOK.entrySet().iterator();
+				fw.write(todayString+": ");
+				while (it.hasNext()) {
+
+					Entry<String, StringBuilder> next = it.next();
+					if(!ignoreList.contains(next.getKey()) ) {
+
+						fw.write(next.getKey() +" " + next.getValue() +" | ");
+					}
+
+
+				}
+
+			}
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+	}
+	private static String checkIfAlreadyExistsInHistoriy(String value , File file) throws IOException {
+		int count = 0;
+		try(
+				BufferedReader br = new BufferedReader(new FileReader(file));
+
+				) 
+		{
+			String line = "";
+			while ((line=br.readLine())!=null) {
+				if (line.contains(value)) {
+					count++;
+				}
+
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		switch (count) {
+		case 0:
+
+			return value+" (novo)";
+		case 1:
+			return value+" (recente)";
+		default:
+			return value;
+		}
+
+
+
+	}
 }
+
 
 
 

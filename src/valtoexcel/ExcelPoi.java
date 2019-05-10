@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -216,25 +219,34 @@ public abstract class ExcelPoi {
 
 
 		List<String> timeLineList = new ArrayList<>();
-		
-		while (rowTimeLine==null || !rowTimeLine.getCell(0,MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().equals("Timeline")) {
+		while (rowTimeLine==null || !rowTimeLine.getCell(0, MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue().equals("Timeline")) {
+			
 			lastRow--;
 		
 			rowTimeLine = timeline.getRow(lastRow);
-		
+			if (rowTimeLine!=null) {
+				String str = rowTimeLine.getCell(0,MissingCellPolicy.CREATE_NULL_AS_BLANK).getStringCellValue();
+
+				if (str != null||!str.equals("")) {
+					timeLineList.add(str);
+					
+				}
+			}
 			
 		}
+		Collections.reverse(timeLineList);
+		
+		
 		System.out.println(timeLineList);
+		
 		System.out.println(rowTimeLine.getRowNum());
 		int lastCell = rowTimeLine.getLastCellNum();
 		
 		System.out.println("Ultima celula "+lastCell);
 		
-		Cell headTimeBefore =  rowTimeLine.getCell(lastCell-1,MissingCellPolicy.RETURN_NULL_AND_BLANK );
+		Cell headTimeBefore =  rowTimeLine.getCell(lastCell-1,MissingCellPolicy.CREATE_NULL_AS_BLANK );
 		if (c.get(Calendar.MONTH)!=headTimeBefore.getDateCellValue().getMonth()) {
 			System.out.println("Mes deferente");
-		}else {
-			
 		}
 		Cell headTime = rowTimeLine.createCell(lastCell);
 
@@ -304,10 +316,7 @@ public abstract class ExcelPoi {
 		}
 	}
 	public static void setQuerysForValFromFile(InputStreamReader sql, Set<Val> set) throws IOException {
-//		if(!sql.exists()) {
-//			System.err.println("Sql ficheiro não existe ");
-//			return;
-//		}
+
 		try(
 				BufferedReader br = new BufferedReader(sql);
 				){
