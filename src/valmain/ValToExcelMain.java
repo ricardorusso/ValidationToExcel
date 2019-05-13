@@ -50,6 +50,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.xmlbeans.impl.store.QueryDelegate.QueryInterface;
 
 import valtoexcel.ExcelPoi;
+import valtoexcel.Resume;
 import valtoexcel.Val;
 import valtoexcel.Val.StatusVal;
 
@@ -191,10 +192,12 @@ public class ValToExcelMain {
 
 			return;
 		}
-		LinkedHashMap<String, StringBuilder> linkMapResumeNOK = checkStatus(set, listTresh);
-		ExcelPoi.whiteMapValExel(set,fileTemplate);
+		List<Resume> listFinalResume = checkStatus(set, listTresh);
 
-		printMap(linkMapResumeNOK);
+		ExcelPoi.whiteMapValExel(set,fileTemplate);
+		addToHistoricFile(listFinalResume);
+		printMap(listFinalResume);
+		
 		Duration diff = Duration.between(start, LocalTime.now());
 		logger.info("Duração: "+diff.toMinutes()+"m:"+diff.getSeconds()+"s");
 
@@ -336,7 +339,7 @@ public class ValToExcelMain {
 
 		LogManager.getLogManager().reset();
 		FileHandler fh = new FileHandler("ValToExel_"+mounth+".log",true);
-		
+
 		ConsoleHandler ch = new ConsoleHandler();
 		ch.setLevel(Level.ALL);
 
@@ -358,8 +361,8 @@ public class ValToExcelMain {
 		};
 
 
-		ch.setFormatter(ff);
-		
+		ch.setFormatter(formaterFile);
+
 		fh.setFormatter(formaterFile);
 		logger.addHandler(ch);
 		logger.addHandler(fh);
@@ -428,10 +431,10 @@ public class ValToExcelMain {
 
 	}
 
-	private static LinkedHashMap<String, StringBuilder> checkStatus(LinkedHashSet<Val> setVal, List<HashMap<String, String>> listTresh) {
-		LinkedHashMap<String, StringBuilder> linkMapResumeNOK = new LinkedHashMap<>();
+	private static List<Resume> checkStatus(LinkedHashSet<Val> setVal, List<HashMap<String, String>> listTresh) {
+		List<Resume> listResumeNOK = new ArrayList<>();
 		for (Val val : setVal) {
-
+			Resume resume = new Resume();
 			boolean status = true;
 			if(val.getMap()==null || val.getMap().isEmpty()) {
 				val.setStatus(StatusVal.OK);
@@ -444,34 +447,46 @@ public class ValToExcelMain {
 				for (Entry<Integer, List<String>> entry : val.getMap().entrySet()) {
 
 					String bo = entry.getValue().get(1);
-
+					double nMsg = Double.parseDouble(entry.getValue().get(0));
+					//System.out.println(nMsg);
 					if (bo!=null &&listTresh.get(indexTres).containsKey(bo)) {
-						double nMsg = Double.parseDouble(entry.getValue().get(0));
+
+
 						if(Double.parseDouble(listTresh.get(indexTres).get(bo))<=nMsg) {
-							System.out.println(val.getName() + " NOK " + bo + " " + nMsg);
+							//System.out.println(val.getName() + " NOK " + bo + " " + nMsg);
 							String res = bo+ " " + nMsg +" | "; 
-							if (!linkMapResumeNOK.containsKey(val.getName())) {
-								linkMapResumeNOK.put(val.getName(), new StringBuilder(res));
+							if (resume.getValName()!=val.getName()) {
+								resume.setValName(val.getName());
+								resume.setResumeStrB(new StringBuilder(res));
+								listResumeNOK.add(resume);
+
 							}else {
-								linkMapResumeNOK.get(val.getName()).append(res);
+								//listResumeNOK.get(val.getName()).append(res);
+								resume.getResumeStrB().append(res);
 							}
 
 							status=false;
 						}
-						else if(nMsg>=Double.parseDouble(listTresh.get(indexTres).get("Default"))) {
-							double defaultValue = Double.parseDouble(listTresh.get(indexTres).get("Default"));
-							System.out.println(val.getName() + " NOK " + bo + " " + nMsg + " Default value used "+defaultValue);
-							String res = bo+ " " + nMsg +" | "; 
-							if (!linkMapResumeNOK.containsKey(val.getName())) {
-								linkMapResumeNOK.put(val.getName(), new StringBuilder(res));
-							}else {
-								linkMapResumeNOK.get(val.getName()).append(res);
-							}
-							status=false;
-						}
-						val.setStatus((status ? StatusVal.OK : StatusVal.NOK));
 					}
+					else if(nMsg>=Double.parseDouble(listTresh.get(indexTres).get("Default"))) {
+						double defaultValue = Double.parseDouble(listTresh.get(indexTres).get("Default"));
+						System.out.println(val.getName() + " NOK " + bo + " " + nMsg + " Default value used "+defaultValue);
+						String res = bo+ " " + nMsg +" | "; 
+						if (resume.getValName()!=val.getName()) {
+							resume.setValName(val.getName());
+							resume.setResumeStrB(new StringBuilder(res));
+							listResumeNOK.add(resume);
+							//listResumeNOK.add(val.getName(), new StringBuilder(res));
+						}else {
+							resume.getResumeStrB().append(res);
+							//listResumeNOK.get(val.getName()).append(res);
+						}
+
+						status=false;
+					}
+					val.setStatus((status ? StatusVal.OK : StatusVal.NOK));
 				}
+
 			}else if(!val.getName().equals("VAL9")) {
 				int size =val.getMap().size();
 				val.setStatus(StatusVal.NOK);
@@ -482,8 +497,12 @@ public class ValToExcelMain {
 					adicionalInfo.add(entry.getValue().get(0));
 
 				}
-
-				linkMapResumeNOK.put(val.getName(), new StringBuilder(size +" Resultados " ).append(adicionalInfo) );
+				resume.setTotalResult(size);
+				resume.setValName(val.getName());
+				resume.setResumeStrB(new StringBuilder(size +" Resultados " ));
+				resume.setListValue(adicionalInfo);
+				listResumeNOK.add(resume);
+				//linkMapResumeNOK.put(val.getName(), new StringBuilder(size +" Resultados " ).append(adicionalInfo) );
 			}
 			if(val.getStatus()==null) {
 				val.setStatus(StatusVal.OK);
@@ -491,28 +510,24 @@ public class ValToExcelMain {
 
 
 		}
-		try {
-			addToHistoricFile(linkMapResumeNOK);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return linkMapResumeNOK;
+		System.out.println(listResumeNOK);
+		return listResumeNOK;
 
 	}
 
-	private static void printMap(LinkedHashMap<String, StringBuilder> linkMapResumeNOK) {
+	private static void printMap(List<Resume> listFinalResume) throws IOException {
 
-		Iterator<Entry<String, StringBuilder>> it =linkMapResumeNOK.entrySet().iterator();
-		if(linkMapResumeNOK.isEmpty()) {
+		Iterator<Resume> it =listFinalResume.iterator();
+		if(listFinalResume.isEmpty()) {
 			logger.fine("-----------------------Resumo OK-----------------------");
 
 		}else {
 			logger.warning("-----------------------Resumo NOK-----------------------");
 
 			while (it.hasNext()) {
-				Entry<String, StringBuilder> entry =it.next();
-				logger.warning(entry.getKey() +" "+entry.getValue() );
+				Resume res =it.next();
+				String checkListValues = checkIfAlreadyExistsInHistoriy(res.getListValue(),hist);
+				logger.warning(res.toString() + checkListValues);
 
 			}
 		}
@@ -520,16 +535,17 @@ public class ValToExcelMain {
 
 	}
 
-	private static void addToHistoricFile(LinkedHashMap<String, StringBuilder> linkMapResumeNOK) throws IOException {
+	private static void addToHistoricFile(List<Resume> listFinalResume) throws IOException {
 		List<String> ignoreList =  Arrays.asList("VAL1","VAL2", "VAL2.1","VAL14");
 		new File(dirOfJarParent+"\\Historico").mkdirs();
-		File hist = new File(dirOfJarParent+"\\Historico\\historico.txt");
-
-
+		hist = new File(dirOfJarParent+"\\Historico\\historico.log");
+		
 		Calendar today = Calendar.getInstance();
+		//today.add(Calendar.DAY_OF_MONTH, 16);
 
 		SimpleDateFormat formart = new SimpleDateFormat("dd-MM-yyyy");
 		String todayString = formart.format(today.getTime());
+		
 		try (
 				FileWriter fw = new FileWriter(hist,true);
 				BufferedReader br = new BufferedReader(new FileReader(hist));
@@ -537,7 +553,7 @@ public class ValToExcelMain {
 				)
 		{
 
-			String brLine;
+			String brLine="";
 			boolean alreadyAddedToday= false;
 			while ((brLine=(br.readLine()))!=null) {
 				if(brLine.contains(todayString)) {
@@ -547,21 +563,22 @@ public class ValToExcelMain {
 
 			}
 			if(!alreadyAddedToday) {
-				Iterator<Entry<String, StringBuilder> >it = linkMapResumeNOK.entrySet().iterator();
-				fw.write(todayString+": ");
+				logger.info("Add results to historic file "+ todayString+" " +hist.getName());
+				Iterator<Resume>it = listFinalResume.iterator();
+				fw.write("\n"+todayString+": ");
 				while (it.hasNext()) {
 
-					Entry<String, StringBuilder> next = it.next();
-					if(!ignoreList.contains(next.getKey()) ) {
+					Resume next = it.next();
+					if(!ignoreList.contains(next.getValName()) ) {
 
-						fw.write(next.getKey() +" " + next.getValue() +" | ");
+						fw.write(next.toString() + next.toStringList(next.getListValue()) +" | ");
 					}
 
 
 				}
 
 			}
-
+			//fw.write("\n");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -569,36 +586,46 @@ public class ValToExcelMain {
 
 
 	}
-	private static String checkIfAlreadyExistsInHistoriy(String value , File file) throws IOException {
-		int count = 0;
-		try(
-				BufferedReader br = new BufferedReader(new FileReader(file));
+	private static String checkIfAlreadyExistsInHistoriy(List<String> list , File file) throws IOException {
+		//logger.info("Check in history file");
+		StringBuilder strBuild = new StringBuilder();
+		
+		for (String string : list) {
+			int count = 0;
+			if (string.equals(list.get(0))) {
+				strBuild.append(string+" ");
+				continue;
+			}
+			try(
+					BufferedReader br = new BufferedReader(new FileReader(file));
 
-				) 
-		{
-			String line = "";
-			while ((line=br.readLine())!=null) {
-				if (line.contains(value)) {
-					count++;
-				}
+					) 
+			{
+				String line;
+				while ((line=br.readLine())!=null) {
+					if (line.contains(string)) {
+						
+						count++;
+					}
 
-			}	
-		} catch (Exception e) {
-			e.printStackTrace();
+				}	
+			} catch (Exception e) {
+				logger.severe(e.getLocalizedMessage());
+			}
+
+			switch (count) {
+			case 1:
+				
+				strBuild.append(string+" (novo), ");
+			case 2:
+				strBuild.append(string+" (recente), ");
+			default:
+				strBuild.append(string+", ");
+			}
+
 		}
-
-		switch (count) {
-		case 0:
-
-			return value+" (novo)";
-		case 1:
-			return value+" (recente)";
-		default:
-			return value;
-		}
-
-
-
+		//System.out.println(strBuild);
+		return strBuild.toString();
 	}
 }
 

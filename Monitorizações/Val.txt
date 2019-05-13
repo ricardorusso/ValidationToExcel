@@ -1,5 +1,5 @@
 ﻿Name , linha, coluna, Query (sem comentarios com to_date() nas datas)
-"VAL1", 3 , 0,  , select * from people;
+"VAL1", 3 , 0,  , ;
 "VAL2", 4, 0, ;
 "VAL2.1", 4 , 5, ;
 "VAL4", 3, 0,

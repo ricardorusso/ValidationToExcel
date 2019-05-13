@@ -1,16 +1,15 @@
 --------------------------------------------------
 ---- VAL1----
 -------------------------------------
-SELECT /*+ PARALLEL(16)*/
-    *
-FROM
-    jobs;
+SELECT
+    salary, first_name, last_name
+FROM employees where employee_id < 105;
 --------------------------------------------------
 ---- VAL2----
 -------------------------------------
-SELECT
-    * 
-FROM countries;
+SELECT salary, 
+    first_name
+FROM employees;
 
 --------------------------------------------------
 ---- VAL2.1----
