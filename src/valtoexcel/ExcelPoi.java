@@ -234,7 +234,7 @@ public abstract class ExcelPoi {
 		Collections.reverse(timeLineList);
 		
 		
-		System.out.println(timeLineList);
+		//System.out.println(timeLineList);
 		
 		System.out.println(rowTimeLine.getRowNum());
 		int lastCell = rowTimeLine.getLastCellNum();
