@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,13 +34,18 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.profesorfalken.jpowershell.PowerShell;
+import com.profesorfalken.jpowershell.PowerShellNotAvailableException;
+
 import valmain.ValToExcelMain;
 import valtoexcel.Val.StatusVal;
 
 
-public abstract class ExcelPoi {
+public class ExcelPoi {
 	private static final Logger logger = ValToExcelMain.logger;
 	private static final String VAL2_1 = "VAL2.1";
+	public  static File finalFile;
+	 public static String dirImageEmail;
 	//private static final String fileNameTemplateNew = "MonitorCSW_v12";
 	/**
 	 * 
@@ -148,17 +156,43 @@ public abstract class ExcelPoi {
 			FileOutputStream out = new FileOutputStream(newFile);
 			work.setForceFormulaRecalculation(true);
 			work.write(out);
+			finalFile= newFile;
 			try {
 				XSSFWorkbook templateWork = new XSSFWorkbook(new FileInputStream(template));
 				addTimeline(templateWork, listOkVal);
 				FileOutputStream outTem = new FileOutputStream(template);
 				templateWork.write(outTem);
+				
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,e.getMessage(), e);
 			}
 			logger.info("ficheiro Criado: " + newFile.getAbsolutePath());
+			
+			saveImage(newFile);
 		}
+		
+	}
+	private static void saveImage(File absolutePath) throws IOException {
+		
+		logger.info("Saving Image for email");
+		Path pathImage = Paths.get(absolutePath.getParent());
+		pathImage = pathImage.subpath(0, pathImage.getNameCount()-2);
+	
 
+		try (PowerShell power = PowerShell.openSession())
+		{
+			
+			InputStream iS =   ExcelPoi.class.getResourceAsStream("/save_image.ps1");
+			InputStreamReader fr = new InputStreamReader(iS);
+			BufferedReader br =  new BufferedReader(fr);
+			
+			logger.info(power.executeScript(br,"'"+absolutePath+"'"+ " '" +absolutePath.getParent()+"\\imagemEmail.jpg"+" '").getCommandOutput());
+			dirImageEmail = absolutePath.getParent()+"\\imagemEmail.jpg";
+		} catch (PowerShellNotAvailableException e) {
+			
+			e.printStackTrace();
+		}
+		
 	}
 	private static void addHeader(Row row, int collumnCell, List<String> headNames) {
 		logger.info("Header names added");

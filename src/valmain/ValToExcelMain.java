@@ -50,6 +50,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.xmlbeans.impl.store.QueryDelegate.QueryInterface;
 
 import valtoexcel.ExcelPoi;
+import valtoexcel.Mail;
 import valtoexcel.Resume;
 import valtoexcel.Val;
 import valtoexcel.Val.StatusVal;
@@ -198,11 +199,21 @@ public class ValToExcelMain {
 		addToHistoricFile(listFinalResume);
 		printMap(listFinalResume);
 		
+		mailDraft(listFinalResume);
+		
 		Duration diff = Duration.between(start, LocalTime.now());
-		logger.info("Duração: "+diff.toMinutes()+"m:"+diff.getSeconds()+"s");
+		logger.fine("Duração: "+diff.toMinutes()+"m:"+diff.getSeconds()+"s");
 
 
 
+	}
+
+	private static  void mailDraft(List<?> listFinalResume) {
+		
+		String sub = (listFinalResume.isEmpty()?"Monits OK" :"Monits NOK");
+		
+		Mail mail = new Mail(sub, ExcelPoi.finalFile, ExcelPoi.dirImageEmail, listFinalResume);
+		mail.mailGenarator();
 	}
 
 	private static LinkedHashSet<Val> loadValsFromFile(File file) throws IOException  {
@@ -319,7 +330,7 @@ public class ValToExcelMain {
 		InputStream inputS= ValToExcelMain.class.getResourceAsStream("/Template.xlsx");
 
 		String dst = dirForTemplate+"\\Template.xlsx";
-		System.out.println(new File(dst).length());
+		
 		if(!new File(dst).exists()) {
 			logger.info("Template criado");
 			Files.copy(inputS, Paths.get(dst) );
@@ -617,10 +628,12 @@ public class ValToExcelMain {
 			case 1:
 				
 				strBuild.append(string+" (novo), ");
+				
+				break;
 			case 2:
-				strBuild.append(string+" (recente), ");
+				strBuild.append(string+" (recente), ");break;
 			default:
-				strBuild.append(string+", ");
+				strBuild.append(string+", ");break;
 			}
 
 		}

@@ -22,8 +22,8 @@ public class Resume {
 	public List<String> getListValue() {
 		return listValue;
 	}
-	public void setListValue(List<String> listValue) {
-		this.listValue = listValue;
+	public void setListValue(List<String> adicionalInformation) {
+		this.listValue = adicionalInformation;
 	}
 	public StringBuilder getResumeStrB() {
 		return resumeStrB;
