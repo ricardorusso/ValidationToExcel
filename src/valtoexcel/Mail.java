@@ -10,13 +10,17 @@ import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.mail.Address;
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Folder;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -49,8 +53,10 @@ public class Mail {
 			Properties authProp =  new Properties();
 			InputStream iSau = Mail.class.getResourceAsStream("/auth.properties");
 			authProp.load(iSau);
+			props.setProperty("mail.imap.ssl.enable", "true");
+			props.setProperty("mail.imap.ssl.trust", "*");
 			props.load(iS);
-			authProp.put("Other", "12345");
+
 			
 			Authenticator auth = new Authenticator() {
 				
@@ -63,15 +69,19 @@ public class Mail {
 
 			//create the POP3 store object and connect with the pop server
 			Store store = emailSession.getStore("imaps");
-
+			System.out.println(store.isConnected());
 			store.connect("outlook.office365.com", authProp.getProperty("fromEmail"), authProp.getProperty("pass") );
 			logger.info("Conected do Outlook email");
 
-
+			
 			MimeMessage msg = new MimeMessage(emailSession);
 			msg.setFlag(javax.mail.Flags.Flag.DRAFT,true);
-
-
+			
+			
+			Properties mailAdresses =   new Properties();
+			mailAdresses.load(Mail.class.getResourceAsStream("/emails.properties"));
+			
+			msg.addRecipients(RecipientType.TO, mailRecepients(mailAdresses) );
 			
 			msg.setSubject(subjectEmail);
 
@@ -116,19 +126,41 @@ public class Mail {
 		} 
 	}
 
+	private Address[] mailRecepients(Properties mailAdresses) throws AddressException {
+		
+		String adressesProp =  mailAdresses.getProperty("emails");
+		String [] arrEmail = adressesProp.split(";");
+		Address[] adresses = new Address[arrEmail.length];
+		for (int i = 0; i < arrEmail.length; i++) {
+			adresses[i] = new InternetAddress(arrEmail[i]);
+		}
+		
+		return adresses;
+		
+	}
+
 	private static void saveDraft(Store store, MimeMessage msg) throws MessagingException {
+		
+		try {
+			MimeMessage [] draftmessagems = {
+					msg	  
+			};
 
-		MimeMessage [] draftmessagems = {
-				msg	  
-		};
+			Folder  emailFolder = store.getFolder("drafts");
+			emailFolder.open(Folder.READ_WRITE);
+			emailFolder.appendMessages(draftmessagems);
+			logger.info("Draft Saved ");
 
-		Folder emailFolder = store.getFolder("drafts");
-		emailFolder.open(Folder.READ_WRITE);
-		emailFolder.appendMessages(draftmessagems);
-		logger.info("Draft Save");
-
-		emailFolder.close(true);
-		store.close();
+			
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}finally {
+			
+			
+			store.close();
+		}
 	}
 
 
@@ -225,7 +257,7 @@ public class Mail {
 		
 		if(hour >= 12 && hour <=19) {
 			saudations ="Boa tarde.";
-		}else if (hour >19) {
+		}else if (hour >19 ) {
 			saudations ="Boa noite.";
 		}else {
 			saudations ="Bom dia.";
